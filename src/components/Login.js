@@ -32,10 +32,10 @@ const Login = () => {
         <h1 className="font-bold text-3xl py-2 text-red-600">{isSignInForm ? "Sign In" : "Sign Up"}</h1>
         
         {!isSignInForm && (
-            <InputText ref={firstName} />
+            <InputText placeholder={"First name"} ref={firstName} />
         )}
-        <InputText ref={email} />
-        <InputText ref={password} />
+        <InputText placeholder={"Name"} ref={email} />         
+        <InputText placeholder={"Password"} ref={password} />
 
         <button className="p-3 my-3 bg-red-700 w-full rounded-lg"
         onClick={handleButtonClick}
