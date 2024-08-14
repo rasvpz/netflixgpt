@@ -2,7 +2,6 @@
 import React, { forwardRef } from "react"
 
 const InputText = forwardRef((props, ref) => {
-    console.log("myProps", props)
     return <input className="p-3 my-2 w-full bg-gray-700" type="text" ref={ref} placeholder={props.placeholder} {...props} />
 });
 
