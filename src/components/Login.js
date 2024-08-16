@@ -2,11 +2,15 @@ import { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidate } from "../utils/validate";
 import InputText from "./InputText";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { addUser } from "../utils/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
-
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [isSignInForm, setIsSignInForm] = useState(true)
     const [errorMessage, setErrorMessage] = useState(true)
 
@@ -14,17 +18,34 @@ const Login = () => {
     const password = useRef(null)
     const firstName = useRef(null)
 
-
-    const handleButtonClick = async() => {
-        setErrorMessage(checkValidate(email.current.value,password.current.value))
-        if(errorMessage) return
+    const handleButtonClick = () => {
+      const error = checkValidate(email.current.value,password.current.value)
+      console.log("errorMessag", error)
+      setErrorMessage(error)
+        if(errorMessage === false) return
 
         if(!isSignInForm){
-          console.log("signUp", isSignInForm)
-          createUserWithEmailAndPassword(auth, email.current.value,password.current.value)
+          console.log("signUp")
+           createUserWithEmailAndPassword(auth, email.current.value,password.current.value)
             .then((userCredential) => {
               // Signed up 
-              const user = userCredential.user;
+              const user = userCredential.user;              
+              updateProfile(auth.currentUser, {
+                displayName: firstName.current.value, 
+                photoURL: "https://avatars.githubusercontent.com/u/34828695?s=96&v=4"
+              }).then(() => {
+                const { uid, email, displayName, photoURL } = auth.currentUser                
+                dispatch(addUser({
+                  uid:uid, 
+                  email:email, 
+                  displayName:displayName, 
+                  photoURL:photoURL
+                }))
+                navigate('/browse')
+
+              }).catch((error) => {
+                  console.log('error')
+              });
               console.log("User", user)
             })
             .catch((error) => {
@@ -37,11 +58,13 @@ const Login = () => {
         }
         else{
           console.log("signIn", isSignInForm)
-          await signInWithEmailAndPassword  (auth, email.current.value,password.current.value)
+           signInWithEmailAndPassword  (auth, email.current.value,password.current.value)
             .then((userCredential) => {
               // Signed in 
               const user = userCredential.user;
               console.log("signInUser", user);
+              navigate('/browse')
+
             })
             .catch((error) => {
               const errorCode = error.code;
@@ -70,7 +93,7 @@ const Login = () => {
         {!isSignInForm && (
             <InputText placeholder={"First name"} ref={firstName} />
         )}
-        <InputText placeholder={"Name"} ref={email} />         
+        <InputText placeholder={"Email"} ref={email} />         
         <InputText placeholder={"Password"} ref={password} />
 
         <button className="p-3 my-3 bg-red-700 w-full rounded-lg"
