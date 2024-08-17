@@ -1,13 +1,13 @@
-import { useRef, useState } from "react";
-import Header from "./Header";
-import { checkValidate } from "../utils/validate";
-import InputText from "./InputText";
+import { useRef, useState } from "react"
+import Header from "./Header"
+import { checkValidate } from "../utils/validate"
+import InputText from "./InputText"
 import { createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  updateProfile } from "firebase/auth";
-import { auth } from "../utils/firebase";
-import { addUser } from "../utils/userSlice";
-import { useDispatch } from "react-redux";
+  signInWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { auth } from "../utils/firebase"
+import { addUser } from "../utils/userSlice"
+import { useDispatch } from "react-redux"
+// import { gsap } from 'gsap'
 
 const Login = () => {
     const dispatch = useDispatch()
@@ -17,6 +17,7 @@ const Login = () => {
     const email = useRef(null)
     const password = useRef(null)
     const firstName = useRef(null)
+    const ballRef = useRef(null);
 
     const handleButtonClick = () => {
       const error = checkValidate(email.current.value,password.current.value)
@@ -77,6 +78,20 @@ const Login = () => {
         setIsSignInForm(!isSignInForm)
     }
 
+    // useEffect(() => {
+    //   const ballElement = ballRef.current;
+    //   if (ballElement) {
+    //     gsap.to(ballElement, {
+    //       y: 300,
+    //       duration: 1,
+    //       ease: "bounce",
+    //       repeat: -1,
+    //       yoyo: true
+    //     });
+    //   }
+    // }, []);
+
+
   return (
     <div>
       <Header />
@@ -85,7 +100,7 @@ const Login = () => {
         src="https://assets.nflxext.com/ffe/siteui/vlv3/b2c3e95b-b7b5-4bb7-a883-f4bfc7472fb7/19fc1a4c-82db-4481-ad08-3a1dffbb8c39/IN-en-20240805-POP_SIGNUP_TWO_WEEKS-perspective_WEB_24a485f6-1820-42be-9b60-1b066f1eb869_small.jpg"
         alt="logo"
       />
-      <form onSubmit={(e) => e.preventDefault()} className="w-3/12 absolute p-4 bg-black my-36 mx-auto right-0 left-0 text-white rounded-lg bg-opacity-80">
+      <form ref={ballRef} onSubmit={(e) => e.preventDefault()} className="aniForm w-3/12 absolute p-4 bg-black my-36 mx-auto right-0 left-0 text-white rounded-lg bg-opacity-80">
         <h1 className="font-bold text-3xl py-2 text-red-600">{isSignInForm ? "Sign In" : "Sign Up"}</h1>
         
         {!isSignInForm && (
